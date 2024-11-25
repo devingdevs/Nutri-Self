@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { conn } from "./bandodedados";
+import { conn } from "./bandodedados.js";
 
-const alimentos_router = router()
+const alimentos_router = Router()
 
 alimentos_router.post("/alimentos", (req, res) => {
     const {nome_alimento, tipo, calorias, valor} = req.body;
