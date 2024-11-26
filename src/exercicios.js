@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { conn } from "./bandodedados.js";
 
-const exercicios_router = Router
+const exercicios_router = Router();
 
 exercicios_router.post("/exercicios", (req, res) => {
     const {nome_exercicio, horas_dia, vezes_na_semana} = req.body;
@@ -15,5 +15,6 @@ exercicios_router.post("/exercicios", (req, res) => {
         res.json(result)
     })
 })
+
 
 export { exercicios_router }
