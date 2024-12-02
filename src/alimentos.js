@@ -3,7 +3,7 @@ import { conn } from "./bandodedados.js";
 
 const alimentos_router = express.Router();
 
-// Criar alimento
+// Addicionar alimento
 alimentos_router.post("/alimentos", (req, res) => {
     const { nome, calorias, proteinas, carboidratos, gorduras } = req.body;
     const sql = `INSERT INTO alimentos (nome, calorias, proteinas, carboidratos, gorduras) VALUES ('${nome}', '${calorias}', '${proteinas}', '${carboidratos}', '${gorduras}')`;
