@@ -1,44 +1,26 @@
-import { Router } from "express";
+import express from "express";
 import { conn } from "./bandodedados.js";
 
 const alimentos_router = Router();
 
-// Addicionar alimento
-alimentos_router.post("/alimentos", (req, res) => {
-    const { nome, dia_ingerido, calorias, proteinas, carboidratos, gorduras } = req.body;
-    const sql = `INSERT INTO alimentos (nome, dia_ingerido, calorias, proteinas, carboidratos, gorduras) VALUES ('${nome}', '${dia_ingerido}','${calorias}', '${proteinas}', '${carboidratos}', '${gorduras}')`;
-    conn.query(sql, [nome, calorias, proteinas, carboidratos, gorduras], (err, result) => {
+// Listar todos os alimentos
+alimentos_router.get("/", (req, res) => {
+    conn.query("SELECT * FROM alimentos", (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.status(201).json({ id: result.insertId, nome });
+        res.json(results);
     });
 });
 
-// Listar alimentos
-alimentos_router.get("/alimentos", (req, res) => {
-    const { usuario_id, dia_ingerido, data, nome, proteina, carboidratos, gorduras, calorias } = req.body;
-    conn.query(`SELECT * FROM alimentos where usuario_id=${usuario_id} and dia_ingerido=${data}`, (err, result) => {
+// Criar um novo alimento
+alimentos_router.post("/", (req, res) => {
+    const { nome, calorias, proteinas, carboidratos, gorduras, vitamina_a, vitamina_c, ferro, calcio } = req.body;
+    const sql = `
+        INSERT INTO alimentos (nome, calorias, proteinas, carboidratos, gorduras, vitamina_a, vitamina_c, ferro, calcio)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    conn.query(sql, [nome, calorias, proteinas, carboidratos, gorduras, vitamina_a, vitamina_c, ferro, calcio], (err, result) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.json(result);
-    });
-});
-
-// Atualizar alimento
-alimentos_router.put("/alimentos/:id", (req, res) => {
-    const { nome, calorias } = req.body;
-    const { id } = req.params;
-    const sql = `UPDATE alimentos SET nome = ?, calorias = ? WHERE id = ?`;
-    conn.query(sql, [nome, calorias, id], (err) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ message: "Alimento atualizado com sucesso!" });
-    });
-});
-
-// Deletar alimento
-alimentos_router.delete("/alimentos/:id", (req, res) => {
-    const { id } = req.params;
-    conn.query("DELETE FROM alimentos WHERE id = ?", [id], (err) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ message: "Alimento deletado com sucesso!" });
+        res.json({ id: result.insertId, message: "Alimento criado com sucesso!" });
     });
 });
 
