@@ -1,18 +1,19 @@
-import express from "express";
+import { Router} from "express";
 import { conn } from "./bandodedados.js";
 
 const user_router = Router();
 
-// listar 
-user_router.get("/", (req, res) => {
-    conn.query("SELECT * FROM usuarios", (err, results) => {
+// listar
+user_router.get("/usuario", (req, res) => {
+    const sql = "SELECT * FROM usuarios";
+    conn.query(sql, (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json(results);
     });
 });
 
-// criar 
-user_router.post("/", (req, res) => {
+// Criar 
+user_router.post("/usuario", (req, res) => {
     const { nome, email, senha } = req.body;
     const sql = "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)";
     conn.query(sql, [nome, email, senha], (err, result) => {
@@ -21,25 +22,25 @@ user_router.post("/", (req, res) => {
     });
 });
 
-
-//atuaalizar
-user_router.put("/usuarios/:id", (req, res) => {
-    const { nome, email } = req.body;
+// Atualizaa
+user_router.put("/usuario/:id", (req, res) => {
     const { id } = req.params;
-    const sql = `UPDATE usuarios SET nome = ?, email = ? WHERE id = ?`;
+    const { nome, email } = req.body;
+    const sql = "UPDATE usuarios SET nome = ?, email = ? WHERE id = ?";
     conn.query(sql, [nome, email, id], (err) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ message: "Usuário atualizado com sucesso!" });
     });
 });
 
-//deletar
-user_router.delete("/usuarios/:id", (req, res) => {
+// remoeve
+user_router.delete("/usuario/:id", (req, res) => {
     const { id } = req.params;
-    conn.query("DELETE FROM usuarios WHERE id = ?", [id], (err) => {
+    const sql = "DELETE FROM usuarios WHERE id = ?";
+    conn.query(sql, [id], (err) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.json({ message: "Usuario deletado com sucesso!"})
+        res.json({ message: "Usuário deletado com sucesso!" });
     });
 });
 
-export {user_router}
+export {user_router};
